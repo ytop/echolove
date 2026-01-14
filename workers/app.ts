@@ -1,9 +1,12 @@
 import { Hono } from "hono";
 import { createRequestHandler } from "react-router";
 import { cors } from "hono/cors";
+import Stripe from "stripe";
 
 type Bindings = {
   DB: D1Database;
+  STRIPE_SECRET_KEY: string;
+  FRONTEND_URL: string;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -50,41 +53,39 @@ app.get("/api/comments", async (c) => {
   }
 });
 
-// Add a new comment
-app.post("/api/comments", async (c) => {
+// Create Stripe checkout session
+app.post("/api/create-checkout-session", async (c) => {
+  const stripe = new Stripe(c.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2025-02-24.acacia" as any, // Cast to any because the type definition might not be updated yet
+  });
+
   try {
-    const body = await c.req.json();
-    const { user, txt } = body;
-
-    // Validation
-    if (!user || user.trim() === "") {
-      return c.json({ code: 355, message: "名字不能为空！" }, 400);
-    }
-    if (!txt || txt.trim() === "") {
-      return c.json({ code: 356, message: "内容不能为空" }, 400);
-    }
-
-    // Sanitize input (basic)
-    const sanitizedUser = user.trim().substring(0, 50);
-    const sanitizedTxt = txt.trim().substring(0, 4096);
-    const time = new Date().toISOString();
-
-    // Insert comment
-    await c.env.DB.prepare(
-      "INSERT INTO comments (user, comment, addtime) VALUES (?, ?, ?)"
-    )
-      .bind(sanitizedUser, sanitizedTxt, time)
-      .run();
-
-    return c.json({
-      code: 1,
-      message: "success",
-      user: sanitizedUser,
-      txt: sanitizedTxt,
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "Premium Voices Subscription",
+            },
+            unit_amount: 1000, // $10.00
+            recurring: {
+              interval: "month",
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "subscription",
+      success_url: `${c.env.FRONTEND_URL}?success=true`,
+      cancel_url: `${c.env.FRONTEND_URL}?canceled=true`,
     });
-  } catch (error) {
-    console.error("Error adding comment:", error);
-    return c.json({ error: "Failed to add comment" }, 500);
+
+    return c.json({ url: session.url });
+  } catch (error: any) {
+    console.error("Error creating checkout session:", error);
+    return c.json({ error: error.message }, 500);
   }
 });
 

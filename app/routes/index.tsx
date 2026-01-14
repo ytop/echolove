@@ -187,7 +187,27 @@ export default function Index() {
               <p className="text-indigo-200 text-xs mb-6 leading-relaxed">
                 Unlock lifelike voice interactions and unlimited memories timeline.
               </p>
-              <button className="w-full py-3 bg-white text-indigo-900 rounded-xl text-sm font-bold shadow-lg hover:shadow-xl hover:bg-indigo-50 transition-all">
+              <button
+                onClick={async () => {
+                  try {
+                    const response = await fetch(
+                      "/api/create-checkout-session",
+                      {
+                        method: "POST",
+                      }
+                    );
+                    const data = await response.json() as { url?: string };
+                    if (data.url) {
+                      window.location.href = data.url;
+                    } else {
+                      console.error("Failed to create checkout session");
+                    }
+                  } catch (error) {
+                    console.error("Error upgrading:", error);
+                  }
+                }}
+                className="w-full py-3 bg-white text-indigo-900 rounded-xl text-sm font-bold shadow-lg hover:shadow-xl hover:bg-indigo-50 transition-all cursor-pointer"
+              >
                 Upgrade Now
               </button>
             </div>
