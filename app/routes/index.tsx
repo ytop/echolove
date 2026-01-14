@@ -10,8 +10,11 @@ import {
   Send,
   Play,
   Settings,
-  Menu
+  Menu,
+  LogOut
 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { AuthModal } from "../components/AuthModal";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -28,8 +31,64 @@ const navItems = [
 ];
 
 export default function Index() {
+  const [user, setUser] = useState<any>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("signup");
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data: any) => {
+        if (data.user) {
+          setUser(data.user);
+        }
+      })
+      .catch((err) => console.error("Failed to fetch user", err));
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      setUser(null);
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
+  const handleUpgrade = async () => {
+    if (!user) {
+      setAuthMode("signup");
+      setIsAuthModalOpen(true);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+      });
+      const data = (await response.json()) as { url?: string; requiresAuth?: boolean };
+
+      if (data.requiresAuth) {
+        setAuthMode("login");
+        setIsAuthModalOpen(true);
+      } else if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("Failed to create checkout session");
+      }
+    } catch (error) {
+      console.error("Error upgrading:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f8f7f4] text-stone-800 font-sans selection:bg-amber-100 selection:text-amber-900 overflow-hidden relative">
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={(user: any) => setUser(user)}
+        initialMode={authMode}
+      />
       {/* Ambient Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-amber-200/20 rounded-full blur-[100px] animate-float-slow" />
@@ -163,49 +222,63 @@ export default function Index() {
         {/* Right Sidebar - Profile & Info */}
         <aside className="hidden lg:flex w-80 flex-col gap-6">
           {/* Profile Card */}
-          <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 p-6 flex items-center justify-between group cursor-pointer hover:bg-white/90 transition-all">
-             <div className="flex items-center gap-3">
-               <div className="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center text-stone-500 ring-2 ring-white shadow-sm">
-                 <User size={20} />
-               </div>
-               <div>
-                 <p className="text-sm font-semibold text-stone-800">My Profile</p>
-                 <p className="text-xs text-stone-500">Free Plan</p>
-               </div>
-             </div>
-             <Settings size={16} className="text-stone-400 group-hover:rotate-90 transition-transform duration-500" />
-          </div>
+          {user ? (
+            <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 p-6 flex items-center justify-between group cursor-pointer hover:bg-white/90 transition-all">
+              <div className="flex items-center gap-3 overflow-hidden">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 ring-2 ring-white shadow-sm shrink-0">
+                  <User size={20} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-stone-800 truncate">{user.email}</p>
+                  <p className="text-xs text-stone-500">Free Plan</p>
+                </div>
+              </div>
+              <button onClick={handleLogout} className="text-stone-400 hover:text-red-500 transition-colors" title="Logout">
+                <LogOut size={16} />
+              </button>
+            </div>
+          ) : (
+            <div
+              onClick={() => {
+                setAuthMode("login");
+                setIsAuthModalOpen(true);
+              }}
+              className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 p-6 flex items-center justify-between group cursor-pointer hover:bg-white/90 transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center text-stone-500 ring-2 ring-white shadow-sm">
+                  <User size={20} />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-stone-800">Guest</p>
+                  <p className="text-xs text-stone-500">Sign in for more</p>
+                </div>
+              </div>
+              <div className="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-medium rounded-full">
+                Login
+              </div>
+            </div>
+          )}
 
           {/* Subscription Card */}
           <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-3xl shadow-lg p-6 text-white relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-white/20 transition-all duration-700" />
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <h3 className="font-serif text-xl font-medium tracking-wide">Premium<br/>Voices</h3>
-                <span className="bg-white/20 px-2 py-1 rounded text-[10px] font-medium backdrop-blur-sm">PRO</span>
+                <h3 className="font-serif text-xl font-medium tracking-wide">
+                  Premium
+                  <br />
+                  Voices
+                </h3>
+                <span className="bg-white/20 px-2 py-1 rounded text-[10px] font-medium backdrop-blur-sm">
+                  PRO
+                </span>
               </div>
               <p className="text-indigo-200 text-xs mb-6 leading-relaxed">
                 Unlock lifelike voice interactions and unlimited memories timeline.
               </p>
               <button
-                onClick={async () => {
-                  try {
-                    const response = await fetch(
-                      "/api/create-checkout-session",
-                      {
-                        method: "POST",
-                      }
-                    );
-                    const data = await response.json() as { url?: string };
-                    if (data.url) {
-                      window.location.href = data.url;
-                    } else {
-                      console.error("Failed to create checkout session");
-                    }
-                  } catch (error) {
-                    console.error("Error upgrading:", error);
-                  }
-                }}
+                onClick={handleUpgrade}
                 className="w-full py-3 bg-white text-indigo-900 rounded-xl text-sm font-bold shadow-lg hover:shadow-xl hover:bg-indigo-50 transition-all cursor-pointer"
               >
                 Upgrade Now
