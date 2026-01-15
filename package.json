@@ -17,6 +17,7 @@
     "publish": true
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "hono": "^4.8.2",
     "isbot": "5.1.26",
     "lucide-react": "^0.562.0",
@@ -26,6 +27,7 @@
     "stripe": "^20.1.2"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@cloudflare/vite-plugin": "1.7.5",
     "@cloudflare/workers-types": "^4.20250425.0",
     "@react-router/dev": "7.6.3",
