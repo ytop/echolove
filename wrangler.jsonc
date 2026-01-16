@@ -54,8 +54,7 @@
     {
       "binding": "DB",
       "database_name": "yalin-memorial-db",
-      "database_id": "create-with-wrangler-d1-create"
-      // "database_id": "fe8a09f0-bcdb-429d-9bfa-ef7465bd5190"
+      "database_id": "fe8a09f0-bcdb-429d-9bfa-ef7465bd5190"
     }
   ],
   "upload_source_maps": true
