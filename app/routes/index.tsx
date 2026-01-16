@@ -21,7 +21,7 @@ export default function Index() {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#FFFEFA] text-slate-800">
+    <div className="flex h-screen w-full overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#FFFEFA] to-[#FDFBF7] text-slate-800">
       <Sidebar 
         samplesCount={samples.length} 
         onOpenDonation={() => setShowDonation(true)} 

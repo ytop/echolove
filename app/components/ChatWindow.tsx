@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type { ChatMessage, VoiceSample } from '../types';
+import { Feather, CloudSun, Send } from 'lucide-react';
 
 interface ChatWindowProps {
   messages: ChatMessage[];
@@ -239,7 +240,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       <header className="h-20 border-b border-[#F7F3EB] bg-[#FFFEFA]/90 backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-2xl bg-[#FFFCEB] flex items-center justify-center text-[#9E8A6B]">
-            <i className="fa-solid fa-feather text-lg"></i>
+            <Feather className="w-5 h-5" />
           </div>
           <div>
             <h1 className="text-base font-bold text-[#6B5E4C]">Heart-to-Heart</h1>
@@ -276,7 +277,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center max-w-sm mx-auto">
             <div className="w-20 h-20 bg-white rounded-[2.5rem] shadow-sm border border-[#F7F3EB] flex items-center justify-center text-[#C9B081] mb-8">
-              <i className="fa-solid fa-cloud-sun text-3xl"></i>
+              <CloudSun className="w-10 h-10" />
             </div>
             <h3 className="text-xl font-bold text-[#6B5E4C] mb-3">Welcome Home</h3>
             <p className="text-sm text-[#9E8A6B] leading-relaxed mb-8 italic">
@@ -314,7 +315,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             className="absolute right-3 p-3 bg-[#9E8A6B] text-white rounded-[1.25rem] hover:bg-[#857458] transition-colors shadow-sm disabled:opacity-30 disabled:grayscale"
             disabled={!inputText.trim()}
           >
-            <i className="fa-solid fa-paper-plane text-xs"></i>
+            <Send className="w-4 h-4 ml-0.5" />
           </button>
         </form>
         <p className="text-center text-[10px] text-[#BDB2A3] mt-4 font-bold tracking-[0.2em] uppercase">

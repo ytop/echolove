@@ -1,4 +1,5 @@
 import React from 'react';
+import { HeartPulse, Heart, ShieldCheck } from 'lucide-react';
 
 interface DonationModalProps {
   onClose: () => void;
@@ -17,7 +18,7 @@ const DonationModal: React.FC<DonationModalProps> = ({ onClose }) => {
         
         <div className="p-10 text-center">
           <div className="w-20 h-20 bg-white rounded-[2.5rem] flex items-center justify-center text-[#C9B081] mx-auto mb-8 shadow-sm border border-[#F2EEE6]">
-            <i className="fa-solid fa-heart-pulse text-3xl"></i>
+            <HeartPulse className="w-10 h-10" />
           </div>
           
           <h2 className="text-2xl font-bold text-[#6B5E4C] mb-3">Keep the Resonance Alive</h2>
@@ -40,7 +41,7 @@ const DonationModal: React.FC<DonationModalProps> = ({ onClose }) => {
             className="w-full py-5 bg-[#9E8A6B] text-white rounded-[2rem] font-bold hover:bg-[#857458] transition-all shadow-lg shadow-[#C9B081]/10 mb-6 flex items-center justify-center gap-3 active:scale-[0.98]"
           >
             Support with Kindness
-            <i className="fa-solid fa-heart text-xs"></i>
+            <Heart className="w-4 h-4 fill-current" />
           </button>
           
           <button 
@@ -51,11 +52,9 @@ const DonationModal: React.FC<DonationModalProps> = ({ onClose }) => {
           </button>
         </div>
 
-        <div className="bg-[#FAF8F3] p-6 border-t border-[#F2EEE6] flex items-center justify-center gap-10 text-[#D6CFB3]">
-          <i className="fa-brands fa-stripe text-3xl hover:text-[#9E8A6B] transition-colors"></i>
-          <i className="fa-brands fa-cc-visa text-3xl hover:text-[#9E8A6B] transition-colors"></i>
-          <i className="fa-brands fa-cc-mastercard text-3xl hover:text-[#9E8A6B] transition-colors"></i>
-          <i className="fa-brands fa-apple-pay text-3xl hover:text-[#9E8A6B] transition-colors"></i>
+        <div className="bg-[#FAF8F3] p-6 border-t border-[#F2EEE6] flex items-center justify-center gap-3 text-[#BDB2A3] uppercase tracking-widest text-[10px] font-bold">
+          <ShieldCheck className="w-4 h-4" />
+          <span>Secure Payments</span>
         </div>
       </div>
     </div>
