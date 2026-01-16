@@ -204,6 +204,7 @@ dist
 package-lock.json
 CLAUDE.md
 
+/echoGemini/
 ### VS Code ###
 .vscode/
 public/video2/
