@@ -9,9 +9,7 @@
   "main": "./workers/app.ts",
   "vars": {
     "VALUE_FROM_CLOUDFLARE": "Hello from Hono/CF",
-    "STRIPE_SECRET_KEY": "sk_test_...",
-    "FRONTEND_URL": "http://localhost:5173",
-    "JWT_SECRET": "secret"
+    "FRONTEND_URL": "http://localhost:9527"
   },
   "observability": {
     "enabled": true

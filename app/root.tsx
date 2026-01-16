@@ -10,6 +10,15 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 
+export function loader({ context }: Route.LoaderArgs) {
+  const env = (context as any).cloudflare?.env || {};
+  return {
+    ENV: {
+      API_KEY: env.GOOGLE_API_KEY || process.env.GOOGLE_API_KEY,
+    },
+  };
+}
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -46,8 +55,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
-  return <Outlet />;
+export default function App({ loaderData }: Route.ComponentProps) {
+  return (
+    <>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `window.ENV = ${JSON.stringify(loaderData?.ENV || {})}`,
+        }}
+      />
+      <Outlet />
+    </>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

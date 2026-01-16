@@ -4,9 +4,10 @@
 declare namespace Cloudflare {
 	interface Env {
 		VALUE_FROM_CLOUDFLARE: "Hello from Hono/CF";
-		STRIPE_SECRET_KEY: "sk_test_...";
-		FRONTEND_URL: "http://localhost:5173";
-		JWT_SECRET: "secret";
+		GOOGLE_API_KEY: string;
+		STRIPE_SECRET_KEY: string;
+		FRONTEND_URL: string;
+		JWT_SECRET: string;
 		DB: D1Database;
 	}
 }
@@ -15,7 +16,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "VALUE_FROM_CLOUDFLARE" | "STRIPE_SECRET_KEY" | "FRONTEND_URL" | "JWT_SECRET">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "VALUE_FROM_CLOUDFLARE" | "GOOGLE_API_KEY" | "STRIPE_SECRET_KEY" | "FRONTEND_URL" | "JWT_SECRET">> {}
 }
 
 // Begin runtime types

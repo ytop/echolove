@@ -1,0 +1,11 @@
+# Cloudflare Workers local development variables
+# Copy this file to .dev.vars and fill in your values
+
+# Google GenAI API Key for voice chat
+GOOGLE_API_KEY=your_google_api_key_here
+
+# Stripe Secret Key for payments
+STRIPE_SECRET_KEY=sk_test_your_stripe_key_here
+
+# JWT Secret for authentication
+JWT_SECRET=your_jwt_secret_here
