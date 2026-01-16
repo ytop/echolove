@@ -1,20 +1,16 @@
 import type { Route } from "./+types/index";
 import {
   MessageCircle,
-  Image as ImageIcon,
-  Film,
-  Calendar,
-  Heart,
   User,
   Mic,
   Send,
   Play,
   Settings,
-  Menu,
   LogOut
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { AuthModal } from "../components/AuthModal";
+import { VoiceUpload } from "../components/VoiceUpload";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -22,13 +18,6 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Because love never goes silent." },
   ];
 }
-
-const navItems = [
-  { icon: MessageCircle, label: "Whispers", active: true },
-  { icon: ImageIcon, label: "Family Photos", active: false },
-  { icon: Film, label: "Life Moments", active: false },
-  { icon: Calendar, label: "Timeline", active: false },
-];
 
 export default function Index() {
   const [user, setUser] = useState<any>(null);
@@ -104,47 +93,7 @@ export default function Index() {
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-300 to-amber-500 flex items-center justify-center text-white font-serif italic shadow-sm">M</div>
             <span className="font-semibold text-stone-700 tracking-wide">Memorial</span>
           </div>
-          <button className="p-2 text-stone-500 hover:bg-stone-100 rounded-full">
-            <Menu size={20} />
-          </button>
         </div>
-
-        {/* Left Sidebar - Navigation */}
-        <aside className="hidden md:flex w-64 flex-col bg-white/70 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 p-6 transition-all hover:shadow-md hover:bg-white/80">
-          <div className="flex items-center gap-3 mb-10 px-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white shadow-md rotate-3">
-              <Heart size={16} fill="currentColor" />
-            </div>
-            <span className="font-serif text-xl font-medium text-stone-800 tracking-tight">Memorial</span>
-          </div>
-
-          <nav className="flex-1 space-y-2">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href="#"
-                className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm transition-all duration-300 group ${
-                  item.active
-                    ? "bg-white shadow-sm text-amber-900 font-medium ring-1 ring-black/5"
-                    : "text-stone-500 hover:bg-white/60 hover:text-stone-800 hover:shadow-sm"
-                }`}
-              >
-                <item.icon
-                  size={18}
-                  className={`transition-colors ${item.active ? "text-amber-500" : "text-stone-400 group-hover:text-amber-500/70"}`}
-                />
-                <span>{item.label}</span>
-              </a>
-            ))}
-          </nav>
-
-          <div className="mt-auto pt-6 border-t border-stone-100">
-            <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl hover:shadow-lg hover:shadow-emerald-500/20 hover:-translate-y-0.5 transition-all duration-300 text-sm font-medium">
-              <Heart size={16} className="animate-pulse" fill="currentColor" />
-              <span>Support Us</span>
-            </button>
-          </div>
-        </aside>
 
         {/* Main Content - Chat Area */}
         <main className="flex-1 flex flex-col bg-white/60 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 overflow-hidden relative">
@@ -167,6 +116,9 @@ export default function Index() {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/40 pointer-events-none" />
 
             <div className="relative z-10 w-full max-w-md flex flex-col items-center gap-8 animate-fade-in-up">
+              {/* Voice Upload Panel */}
+              <VoiceUpload />
+
               {/* Avatar */}
               <div className="relative group cursor-pointer">
                 <div className="absolute -inset-1 bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 rounded-full opacity-70 group-hover:opacity-100 blur transition-opacity duration-500" />
